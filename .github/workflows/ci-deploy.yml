@@ -15,6 +15,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: "Create main env file"
+        run: |
+          touch .env
+          echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
 
