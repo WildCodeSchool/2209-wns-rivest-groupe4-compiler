@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npx tsc",
+    "prod": "node ./dist/index.js",
     "start": "nodemon --exec ts-node-dev index.ts",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q compiler-dist/index.js\""
   },
