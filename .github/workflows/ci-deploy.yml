@@ -11,7 +11,6 @@ on:
 
 jobs:
   docker:
-    needs: Push to docker hub
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
