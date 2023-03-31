@@ -39,7 +39,7 @@ jobs:
           push: true
           context: "{{defaultContext}}"
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/codeless4-compiler-staging:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/codeless4-compiler:staging
             
   deploy-production:
     if: github.ref == 'refs/heads/main'
@@ -69,5 +69,5 @@ jobs:
           push: true
           context: "{{defaultContext}}"
           tags: |
-            ${{ secrets.DOCKER_HUB_USERNAME }}/codeless4-compiler-production:latest
+            ${{ secrets.DOCKER_HUB_USERNAME }}/codeless4-compiler:latest
             
