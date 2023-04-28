@@ -15,5 +15,5 @@ app.use(bodyParser.json());
 app.use("/compiler/file", fileRouter);
 
 app.listen(PORT, () => {
-  console.warn(`[server]: Server is running at http://localhost:${PORT}`);
+  console.warn(`[server]: Compiler is now running at http://localhost:${PORT}`);
 });
