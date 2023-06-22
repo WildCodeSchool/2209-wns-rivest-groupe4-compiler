@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 import express, { Request, Response } from "express";
 import { exec } from "child_process";
 import fs from "fs-extra";
@@ -23,15 +22,29 @@ const decodeBase64 = (data: string) => {
 };
 
 fileRouter.post("/", async (req: Request, res: Response) => {
-  const fileContent: string = req.body.content;
+  const fileContent: string = req.body.code;
+  const fileExtension: string = req.body.fileExtension;
+  const filename: string =
+    fileExtension === "ts"
+      ? "./src/child-processes/code.ts"
+      : "./src/child-processes/code.js";
+
   try {
-    fs.outputFile("../files/code.js", decodeBase64(fileContent));
-  } catch (error) {
-    return res.status(500).send(error);
-  }
-  try {
-    const codeResult: string = await execShellCommand("node ../files/code.js");
-    return res.status(200).send(codeResult);
+    fs.writeFile(filename, decodeBase64(fileContent));
+    try {
+      let codeResult;
+      if (fileExtension === "ts") {
+        codeResult = await execShellCommand(
+          `tsc ${filename} && node ${filename.replace(".ts", ".js")}`
+        );
+      }
+      if (fileExtension === "js") {
+        codeResult = await execShellCommand(`node ${filename}`);
+      }
+      return res.status(200).send(codeResult);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   } catch (error) {
     return res.status(500).send(error);
   }
