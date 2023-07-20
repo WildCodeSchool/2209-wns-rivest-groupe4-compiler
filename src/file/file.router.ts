@@ -5,12 +5,11 @@ import fs from "fs-extra";
 const execShellCommand = (cmd: string) => {
   return new Promise<string>((resolve, reject) => {
     exec(cmd, (error, stdout, stderr) => {
-      if (error || stderr) {
-        console.warn(error || stderr);
-        reject();
+      if (stdout) {
+        resolve(stdout);
+      } else {
+        reject(stderr);
       }
-      console.log("STDOUT", stdout);
-      resolve(stdout);
     });
   });
 };
@@ -30,7 +29,8 @@ fileRouter.post("/", async (req: Request, res: Response) => {
       : "./src/child-processes/code.js";
 
   try {
-    fs.writeFile(filename, decodeBase64(fileContent));
+    await fs.createFile(filename);
+    await fs.writeFile(filename, decodeBase64(fileContent));
     try {
       let codeResult;
       if (fileExtension === "ts") {
@@ -42,11 +42,13 @@ fileRouter.post("/", async (req: Request, res: Response) => {
         codeResult = await execShellCommand(`node ${filename}`);
       }
       return res.status(200).send(codeResult);
-    } catch (error) {
-      return res.status(500).send(error);
+    } catch (error: any) {
+      if (error) {
+        res.status(500).send(error);
+      }
     }
-  } catch (error) {
-    return res.status(500).send(error);
+  } catch (error: any) {
+    res.status(500).send(error);
   }
 });
 
